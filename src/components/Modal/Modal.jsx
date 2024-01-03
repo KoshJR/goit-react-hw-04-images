@@ -1,42 +1,40 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader } from 'components/Loader/Loader';
 import css from './Modal.module.css';
 
-export class Modal extends Component {
-  state = {
-    isLoading: true,
-  };
+export const Modal = ({ imageURL, handleCloseModal }) => {
+  const [loader, setLoader] = useState(true);
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleCloseModal);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleCloseModal);
-  }
-  handleCloseModal = e => {
-    if (e.target === e.currentTarget || e.code === 'Escape') {
-      this.props.handleCloseModal();
+  useEffect(() => {
+    function addCloseKey(event) {
+      if (event.code === 'Escape') handleCloseModal();
     }
+    window.addEventListener('keydown', addCloseKey);
+
+    return () => {
+      window.removeEventListener('keydown', addCloseKey);
+    };
+  }, [handleCloseModal]);
+
+  function closeModal(event) {
+    if (event.target === event.currentTarget) handleCloseModal();
+  }
+
+  const handleLoader = () => {
+    setLoader(false);
   };
 
-  handleLoader = () => {
-    this.setState({ isLoading: false });
-  };
-  render() {
-    const { imageURL } = this.props;
-    const { isLoading } = this.state;
-    return (
-      <div className={css.Overlay} onClick={this.handleCloseModal}>
-        <div className={css.Modal}>
-          {isLoading && <Loader />}
-          <img
-            src={imageURL}
-            alt=""
-            onLoad={this.handleLoader}
-            style={{ display: isLoading ? 'none' : 'block' }}
-          />
-        </div>
+  return (
+    <div className={css.Overlay} onClick={closeModal}>
+      <div className={css.Modal}>
+        {loader && <Loader />}
+        <img
+          src={imageURL}
+          alt=""
+          onLoad={handleLoader}
+          style={{ display: loader ? 'none' : 'block' }}
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
