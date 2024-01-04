@@ -31,9 +31,6 @@ export const App = () => {
             alert('Oops, something went wrong!');
           } else {
             setImages(prevState => [...prevState, ...response.data.hits]);
-            setLoadMore(
-              pages < Math.ceil(response.data.totalHits / per_page.current)
-            );
           }
         })
         .catch(error => {
@@ -46,6 +43,15 @@ export const App = () => {
       fetchImages();
     }
   }, [pages, textInput]);
+
+  useEffect(() => {
+    if (textInput === '') {
+      setLoader(false);
+      setLoadMore(false);
+      return;
+    } else if (textInput) {
+    }
+  }, []);
 
   const handleSearchText = (textInput, pages) => {
     setTextInput(textInput);
