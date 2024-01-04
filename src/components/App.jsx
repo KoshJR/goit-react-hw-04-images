@@ -31,7 +31,9 @@ export const App = () => {
             alert('Oops, something went wrong!');
           } else {
             setImages(prevState => [...prevState, ...response.data.hits]);
-            setLoadMore(pages < Math.ceil(response.data.totalHits / per_page));
+            setLoadMore(
+              pages < Math.ceil(response.data.totalHits / per_page.current)
+            );
           }
         })
         .catch(error => {
@@ -70,7 +72,7 @@ export const App = () => {
       <Searchbar handleSearchText={handleSearchText} textInput={textInput} />
       <ImageGallery images={images} openModal={openModal} />
       {loader && <Loader />}
-      {images.length > 0 && !loadMore && (
+      {loadMore && images.length > 0 && !loader && (
         <Button handleLoadMore={handleLoadMore} />
       )}
       {modalStatus && (

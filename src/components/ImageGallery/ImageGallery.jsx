@@ -1,4 +1,5 @@
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import { v4 as uuidv4 } from 'uuid';
 import css from './ImageGallery.module.css';
 
 export const ImageGallery = ({ images, openModal }) => {
@@ -8,7 +9,7 @@ export const ImageGallery = ({ images, openModal }) => {
         {images.map(({ id, webformatURL, largeImageURL, tags }) => (
           <ImageGalleryItem
             openModal={openModal}
-            key={Math.random().toString()}
+            key={uuidv4()}
             tags={tags}
             id={id}
             webformatURL={webformatURL}
