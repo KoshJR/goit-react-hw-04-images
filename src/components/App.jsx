@@ -11,7 +11,7 @@ export const App = () => {
   const [images, setImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [textInput, setTextInput] = useState('');
-  const [pages, setPages] = useState(1);
+  const [pages, setPages] = useState(0);
   const [modalStatus, setModalStatus] = useState(false);
   const [imageURL, setImageURL] = useState('');
   const [loadMore, setLoadMore] = useState(false);
@@ -28,9 +28,13 @@ export const App = () => {
       fetchGalleryItems(textInput, pages, per_page.current)
         .then(response => {
           if (!response.data.hits.length) {
+            setImages([]);
             alert('Oops, something went wrong!');
           } else {
             setImages(prevState => [...prevState, ...response.data.hits]);
+            setLoadMore(
+              pages < Math.ceil(response.data.totalHits / per_page.current)
+            );
           }
         })
         .catch(error => {
@@ -38,20 +42,12 @@ export const App = () => {
         })
         .finally(() => setLoader(false));
     }
+
     if (textInput) {
       setLoader(true);
       fetchImages();
     }
   }, [pages, textInput]);
-
-  useEffect(() => {
-    if (textInput === '') {
-      setLoader(false);
-      setLoadMore(false);
-      return;
-    } else if (textInput) {
-    }
-  }, []);
 
   const handleSearchText = (textInput, pages) => {
     setTextInput(textInput);
